@@ -23,7 +23,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone <项目地址>
+git clone https://github.com/279458179/app-penma.git
 cd idle-qrcode-system
 ```
 
