@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <title>物品信息</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/element-plus@2.7.0/dist/index.full.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus@2.7.0/dist/index.css">
+</head>
+<body>
+<div id="app" style="padding:20px">
+    <h2>物品编号：{{item.id}}</h2>
+    <el-form label-width="100px">
+        <el-form-item label="物品名称"><el-input v-model="item.name"></el-input></el-form-item>
+        <el-form-item label="存放位置"><el-input v-model="item.location"></el-input></el-form-item>
+        <el-form-item label="日期"><el-input v-model="item.buy_date" placeholder="2025-01-01"></el-input></el-form-item>
+        <el-form-item label="负责人"><el-input v-model="item.owner"></el-input></el-form-item>
+        <el-form-item label="备注"><el-input type="textarea" v-model="item.remark"></el-input></el-form-item>
+        <el-form-item label="照片">
+            <input type="file" accept="image/*" @change="onFileChange" ref="fileInput">
+            <div v-if="item.photo"><img :src="item.photo" style="width:100%;margin-top:10px;"></div>
+        </el-form-item>
+        <el-button type="primary" @click="save">保存信息</el-button>
+    </el-form>
+</div>
+
+<script>
+const { createApp, ref } = Vue
+createApp({
+    setup() {
+        const item = ref({{ item | tojson }})
+        const file = ref(null)
+        const onFileChange = (e) => { file.value = e.target.files[0] }
+        const save = async () => {
+            const form = new FormData()
+            form.append('name', item.value.name)
+            form.append('location', item.value.location)
+            form.append('buy_date', item.value.buy_date)
+            form.append('owner', item.value.owner)
+            form.append('remark', item.value.remark)
+            if(file.value) form.append('photo', file.value)
+            
+            await fetch(location.pathname, {method:'POST', body:form})
+            ElementPlus.ElMessage.success('保存成功！')
+        }
+        return { item, onFileChange, save }
+    }
+}).use(ElementPlus).mount('#app')
+</script>
+</body>
+</html>
